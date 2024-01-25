@@ -3,6 +3,7 @@
 namespace App\Security\Voter;
 
 use App\Entity\Conge;
+use App\Services\Calendar;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -14,8 +15,10 @@ class CongeVoter extends Voter
     public const VIEW = 'CONGE_VIEW';
     public const DELETE = 'CONGE_DELETE';
 
-    public function __construct(private readonly Security $security)
-    {
+    public function __construct(
+        private readonly Security $security,
+        private readonly Calendar $calendar,
+    ) {
     }
 
     protected function supports(string $attribute, mixed $subject): bool
@@ -34,7 +37,12 @@ class CongeVoter extends Voter
         }
 
         return match ($attribute) {
-            self::EDIT => $this->security->isGranted('ROLE_ADMIN') || $subject->getBenefciaire() === $user,
+            self::EDIT =>
+                !$this->calendar->isWeekend()
+                && (
+                    $this->security->isGranted('ROLE_ADMIN')
+                    || $subject->getBenefciaire() === $user
+                ),
             self::VIEW => $this->security->isGranted('ROLE_USER'),
             self::DELETE => $this->security->isGranted('ROLE_ADMIN') && $subject->getBenefciaire() === $user,
             default => false,

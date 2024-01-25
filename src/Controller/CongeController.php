@@ -47,7 +47,6 @@ class CongeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_conge_show', methods: ['GET'])]
-    #[IsGranted(CongeVoter::VIEW, subject: 'conge')]
     public function show(Conge $conge): Response
     {
         return $this->render('conge/show.html.twig', [
@@ -59,6 +58,7 @@ class CongeController extends AbstractController
     #[IsGranted(new Expression(
         'is_granted("ROLE_ADMIN") or user === subject.getBenefciaire()'
     ), subject: 'conge')]
+    #[IsGranted(CongeVoter::EDIT, subject: 'conge')]
     public function edit(Request $request, Conge $conge, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CongeType::class, $conge);
