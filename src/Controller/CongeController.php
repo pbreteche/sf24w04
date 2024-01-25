@@ -7,9 +7,11 @@ use App\Form\CongeType;
 use App\Repository\CongeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/conge')]
 class CongeController extends AbstractController
@@ -26,6 +28,7 @@ class CongeController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $conge = new Conge();
+        $conge->setBenefciaire($this->getUser());
         $form = $this->createForm(CongeType::class, $conge);
         $form->handleRequest($request);
 
@@ -51,6 +54,9 @@ class CongeController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_conge_edit', methods: ['GET', 'POST'])]
+    #[IsGranted(new Expression(
+        'is_granted("ROLE_ADMIN") or user === subject.getBenefciaire()'
+    ), subject: 'conge')]
     public function edit(Request $request, Conge $conge, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CongeType::class, $conge);
@@ -69,6 +75,7 @@ class CongeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_conge_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Conge $conge, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$conge->getId(), $request->request->get('_token'))) {

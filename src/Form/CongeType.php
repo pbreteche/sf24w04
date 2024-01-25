@@ -16,10 +16,6 @@ class CongeType extends AbstractType
         $builder
             ->add('type')
             ->add('debut')
-            ->add('benefciaire', EntityType::class, [
-                'class' => User::class,
-'choice_label' => 'id',
-            ])
         ;
     }
 
