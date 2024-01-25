@@ -61,6 +61,12 @@ class CongeController extends AbstractController
     #[IsGranted(CongeVoter::EDIT, subject: 'conge')]
     public function edit(Request $request, Conge $conge, EntityManagerInterface $entityManager): Response
     {
+        $everyOne = $this->isGranted('ROLE_ADMIN');
+
+        if (rand(0, 5) > 3) {
+            throw $this->createAccessDeniedException();
+        }
+
         $form = $this->createForm(CongeType::class, $conge);
         $form->handleRequest($request);
 
