@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Conge;
 use App\Form\CongeType;
 use App\Repository\CongeRepository;
+use App\Security\Voter\CongeVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -46,6 +47,7 @@ class CongeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_conge_show', methods: ['GET'])]
+    #[IsGranted(CongeVoter::VIEW, subject: 'conge')]
     public function show(Conge $conge): Response
     {
         return $this->render('conge/show.html.twig', [
