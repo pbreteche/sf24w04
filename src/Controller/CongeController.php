@@ -52,7 +52,7 @@ class CongeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_conge_show', methods: ['GET'])]
-    #[Cache(etag: '')]
+    #[Cache(expires: 'tomorrow', public: true)]
     public function show(
         Conge $conge,
         EventDispatcherInterface $dispatcher,
@@ -61,9 +61,18 @@ class CongeController extends AbstractController
         $dispatcher->dispatch(new Event(), AppEvent::CONGE_SHOW_EVENT);
         $dispatcher->dispatch(new CongeShowEvent($conge));
 
-        return $this->render('conge/show.html.twig', [
+        $response = $this->render('conge/show.html.twig', [
             'conge' => $conge,
         ]);
+
+        $response
+            ->setExpires(new \DateTimeImmutable('tomorrow'))
+            ->setPublic()
+        ;
+
+        $response->headers->set('Cache-control', 'public');
+
+        return $response;
     }
 
     #[Route('/{id}/edit', name: 'app_conge_edit', methods: ['GET', 'POST'])]
