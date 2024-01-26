@@ -55,15 +55,24 @@ class CongeController extends AbstractController
     #[Cache(expires: 'tomorrow', public: true)]
     public function show(
         Conge $conge,
+        Request $request,
         EventDispatcherInterface $dispatcher,
     ): Response
     {
+        $response = new Response();
+        // Il nous faudrait une colonne "updatedAt"
+        $response->setLastModified(new \DateTimeImmutable('2024-01-15'));
+        $response->setPublic();
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+
         $dispatcher->dispatch(new Event(), AppEvent::CONGE_SHOW_EVENT);
         $dispatcher->dispatch(new CongeShowEvent($conge));
 
-        $response = $this->render('conge/show.html.twig', [
+        $response->setContent($this->renderView('conge/show.html.twig', [
             'conge' => $conge,
-        ]);
+        ]));
 
         $response
             ->setExpires(new \DateTimeImmutable('tomorrow'))

@@ -5,6 +5,8 @@
 {% block body %}
     <h1>Conge</h1>
 
+    {{ render_esi(controller('App\\Controller\\MenuController::menu')) }}
+
     <table class="table">
         <tbody>
             <tr>
