@@ -5,6 +5,14 @@
 {% block body %}
     <h1>Conge</h1>
 
+    {{ '<div>coucou'~'</div>' }}
+
+    {% if 'today' is weekend %}
+        <p>Vous ne pouvez pas poser de congé</p>
+    {% else %}
+        <p>Vous pouvez poser des congés</p>
+    {% endif %}
+
     {{ render_esi(controller('App\\Controller\\MenuController::menu')) }}
 
     <table class="table">
