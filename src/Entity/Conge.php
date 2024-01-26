@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CongeRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Conge
 {
     #[ORM\Id]
@@ -63,5 +64,11 @@ class Conge
         $this->benefciaire = $benefciaire;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAt()
+    {
+        // Doctrine Lifecycle callback
     }
 }
