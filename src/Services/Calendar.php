@@ -4,13 +4,12 @@ namespace App\Services;
 
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-#[Autoconfigure(lazy: true)]
-readonly class Calendar
+#[Autoconfigure(lazy: 'App\Services\CalendarInterface')]
+readonly class Calendar implements CalendarInterface
 {
     public function __construct(
         private \DateTimeZone $timezone
     ) {
-
     }
 
     public function isWeekend(\DateTimeInterface|string $date = null): bool

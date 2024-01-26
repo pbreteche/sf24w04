@@ -3,7 +3,7 @@
 namespace App\Security\Voter;
 
 use App\Entity\Conge;
-use App\Services\Calendar;
+use App\Services\CalendarInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -17,7 +17,7 @@ class CongeVoter extends Voter
 
     public function __construct(
         private readonly Security $security,
-        private readonly Calendar $calendar,
+        private readonly CalendarInterface $calendar,
     ) {
     }
 

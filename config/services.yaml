@@ -33,6 +33,8 @@ services:
         class: App\Services\Calendar
         arguments: ['@app_timezone']
 
+#    App\Services\CalendarInterface: '@App\Services\Calendar'
+
     app_timezone:
         class: DateTimeZone
         arguments: ['%timezone%']
