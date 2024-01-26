@@ -3,16 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Conge;
+use App\EventSubscriber\Event\AppEvent;
+use App\EventSubscriber\Event\CongeShowEvent;
 use App\Form\CongeType;
 use App\Repository\CongeRepository;
 use App\Security\Voter\CongeVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\EventDispatcher\Event;
 
 #[Route('/conge')]
 class CongeController extends AbstractController
@@ -47,8 +51,14 @@ class CongeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_conge_show', methods: ['GET'])]
-    public function show(Conge $conge): Response
+    public function show(
+        Conge $conge,
+        EventDispatcherInterface $dispatcher,
+    ): Response
     {
+        $dispatcher->dispatch(new Event(), AppEvent::CONGE_SHOW_EVENT);
+        $dispatcher->dispatch(new CongeShowEvent($conge));
+
         return $this->render('conge/show.html.twig', [
             'conge' => $conge,
         ]);
