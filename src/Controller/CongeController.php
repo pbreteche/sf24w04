@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\Event;
@@ -51,6 +52,7 @@ class CongeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_conge_show', methods: ['GET'])]
+    #[Cache(etag: '')]
     public function show(
         Conge $conge,
         EventDispatcherInterface $dispatcher,
