@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Contracts\EventDispatcher\Event;
 
 #[Route('/conge')]
@@ -57,12 +58,16 @@ class CongeController extends AbstractController
         Conge $conge,
         Request $request,
         EventDispatcherInterface $dispatcher,
+        Stopwatch $stopwatch,
     ): Response
     {
+        $stopwatch->start('conge show controller');
         $response = new Response();
         // Il nous faudrait une colonne "updatedAt"
         $response->setLastModified(new \DateTimeImmutable('2024-01-15'));
         $response->setPublic();
+
+        $stopwatch->stop('conge show controller');
         if ($response->isNotModified($request)) {
             return $response;
         }
